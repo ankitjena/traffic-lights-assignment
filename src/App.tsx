@@ -15,7 +15,7 @@ const LightColor = {
 
 interface TrafficLight {
   direction: (typeof Direction)[keyof typeof Direction];
-  state: (typeof LightColor)[keyof typeof LightColor];
+  color: (typeof LightColor)[keyof typeof LightColor];
   greenDuration: number;
 }
 
@@ -26,22 +26,22 @@ export const App: React.FC = () => {
   const [lights, setLights] = useState<TrafficLight[]>([
     {
       direction: Direction.NORTH,
-      state: LightColor.RED,
+      color: LightColor.RED,
       greenDuration: DEFAULT_GREEN_DURATION,
     },
     {
       direction: Direction.EAST,
-      state: LightColor.RED,
+      color: LightColor.RED,
       greenDuration: DEFAULT_GREEN_DURATION,
     },
     {
       direction: Direction.SOUTH,
-      state: LightColor.RED,
+      color: LightColor.RED,
       greenDuration: DEFAULT_GREEN_DURATION,
     },
     {
       direction: Direction.WEST,
-      state: LightColor.RED,
+      color: LightColor.RED,
       greenDuration: DEFAULT_GREEN_DURATION,
     },
   ]);
@@ -126,25 +126,25 @@ export const App: React.FC = () => {
         <div />
         <div
           className={getClassNameFromLightColor(
-            lights[directionToIndexMap[Direction.NORTH]].state
+            lights[directionToIndexMap[Direction.NORTH]].color
           )}
         />
         <div />
         <div
           className={getClassNameFromLightColor(
-            lights[directionToIndexMap[Direction.WEST]].state
+            lights[directionToIndexMap[Direction.WEST]].color
           )}
         />
         <div />
         <div
           className={getClassNameFromLightColor(
-            lights[directionToIndexMap[Direction.EAST]].state
+            lights[directionToIndexMap[Direction.EAST]].color
           )}
         />
         <div />
         <div
           className={getClassNameFromLightColor(
-            lights[directionToIndexMap[Direction.SOUTH]].state
+            lights[directionToIndexMap[Direction.SOUTH]].color
           )}
         />
         <div />

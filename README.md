@@ -1,50 +1,18 @@
-# React + TypeScript + Vite
+# Traffic Crossing Lights Simulator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Setup
+- Clone the repository
+- Install the dependencies - `npm install`
+- Run the app - `npm run dev`
+- Open `localhost:5173` in the browser to see the app.
 
-Currently, two official plugins are available:
+## Overview
+The architecture is pretty straight forward. The only dependency is tailwindcss which I find faster to write CSS with. The template uses vite as the build tool along with React + Typescript.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## How it works
+We have an array of objects containing information on each light(direction, color, duration of green light). When clicking start simulation sets a variabled called `isRunning` as true which sets the `useEffect` in motion. 
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+We do a few things in the `useEffect`. First we return early if simulation is not running. Next we check if a state called `isYellow` is true. If yes, we set a timeout to change it false after the duration of yellow light(1 sec). We also set the current index of the light to be +1. If it's false, we set a timeout to turn `isYellow` to true after the duration of green light for each individual light object.
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+Next we call the `updateLights` method, which based on the `currentIndex` and `isYellow` states, sets the color of the current light object from one of `RED`, `YELLOW`, `GREEN`.
