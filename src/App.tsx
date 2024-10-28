@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 
 const Direction = {
   NORTH: "north",
-  SOUTH: "south",
   EAST: "east",
+  SOUTH: "south",
   WEST: "west",
 } as const;
 
@@ -16,28 +16,33 @@ const LightColor = {
 interface TrafficLight {
   direction: (typeof Direction)[keyof typeof Direction];
   state: (typeof LightColor)[keyof typeof LightColor];
+  greenDuration: number;
 }
 
 export const App: React.FC = () => {
   const YELLOW_DURATION = 1000;
-  const [greenDuration, setGreenDuration] = useState(5000);
+  const DEFAULT_GREEN_DURATION = 5000;
 
   const [lights, setLights] = useState<TrafficLight[]>([
     {
       direction: Direction.NORTH,
       state: LightColor.RED,
+      greenDuration: DEFAULT_GREEN_DURATION,
     },
     {
       direction: Direction.EAST,
       state: LightColor.RED,
+      greenDuration: DEFAULT_GREEN_DURATION,
     },
     {
       direction: Direction.SOUTH,
       state: LightColor.RED,
+      greenDuration: DEFAULT_GREEN_DURATION,
     },
     {
       direction: Direction.WEST,
       state: LightColor.RED,
+      greenDuration: DEFAULT_GREEN_DURATION,
     },
   ]);
 
@@ -52,8 +57,18 @@ export const App: React.FC = () => {
   const [isYellow, setIsYellow] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
 
-  const handleGreenDurationChange = (value: string) => {
-    setGreenDuration(Math.max(1000, parseInt(value) * 1000));
+  const handleGreenDurationChange = (
+    direction: (typeof Direction)[keyof typeof Direction],
+    value: string
+  ) => {
+    const duration = Math.max(1000, parseInt(value) * 1000);
+    setLights((prevLights) =>
+      prevLights.map((light) =>
+        light.direction === direction
+          ? { ...light, greenDuration: duration }
+          : light
+      )
+    );
   };
 
   const updateLights = useCallback(() => {
@@ -70,6 +85,11 @@ export const App: React.FC = () => {
     );
   }, [currentIndex, isYellow]);
 
+  const getGreenDuration = useCallback(
+    (currentIndex: number) => lights[currentIndex].greenDuration,
+    [lights]
+  );
+
   useEffect(() => {
     if (!isRunning) return;
 
@@ -83,12 +103,12 @@ export const App: React.FC = () => {
     } else {
       timer = setTimeout(() => {
         setIsYellow(true);
-      }, greenDuration);
+      }, getGreenDuration(currentIndex));
     }
 
     updateLights();
     return () => clearTimeout(timer);
-  }, [isRunning, greenDuration, currentIndex, isYellow]);
+  }, [isRunning, currentIndex, isYellow]);
 
   const getClassNameFromLightColor = (
     color: (typeof LightColor)[keyof typeof LightColor]
@@ -96,7 +116,7 @@ export const App: React.FC = () => {
     return color === LightColor.RED
       ? "bg-red-500"
       : color === LightColor.YELLOW
-      ? "bg-orange-300"
+      ? "bg-yellow-500"
       : "bg-green-500";
   };
 
@@ -137,14 +157,23 @@ export const App: React.FC = () => {
           {isRunning ? "Stop" : "Start"} simulation
         </button>
       </div>
-      <div className="flex items-center justify-center mt-12">
-          Change green light duration (in seconds):
-          <input
-            type="number"
-            value={greenDuration / 1000}
-            onChange={(e) => handleGreenDurationChange(e.target.value)}
-            className="w-16 h-8 ml-2 border border-black rounded-lg"
-            />
+      <div className="flex flex-col items-center justify-center mt-12 gap-y-2">
+        Change green light duration (in seconds) for:
+        <div className="flex items-center gap-x-2">
+          {Object.values(Direction).map((direction, idx) => (
+            <div key={direction} className="flex items-center">
+              <span>{direction}</span>
+              <input
+                type="number"
+                value={getGreenDuration(idx) / 1000}
+                onChange={(e) =>
+                  handleGreenDurationChange(direction, e.target.value)
+                }
+                className="w-16 h-8 ml-2 border border-black rounded-lg"
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
