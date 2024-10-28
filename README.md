@@ -1,5 +1,8 @@
 # Traffic Crossing Lights Simulator
 
+## Live demo
+https://traffic-lights-assignment.vercel.app/
+
 ## Setup
 - Clone the repository
 - Install the dependencies - `npm install`
