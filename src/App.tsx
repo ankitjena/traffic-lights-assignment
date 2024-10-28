@@ -75,7 +75,7 @@ export const App: React.FC = () => {
     setLights((prevLights) =>
       prevLights.map((light, index) => ({
         ...light,
-        state:
+        color:
           index === currentIndex
             ? isYellow
               ? LightColor.YELLOW
